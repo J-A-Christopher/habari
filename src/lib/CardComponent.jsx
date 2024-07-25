@@ -1,30 +1,79 @@
-import React from 'react'
-import { Card, CardContent,} from "../components/ui/card"
+import { Card, CardContent } from "../components/ui/card";
+import { AlertCircle } from "lucide-react"; 
+import { useGetNewsQuery } from "../features/api/apiSlice";
+import { Loader2 } from "lucide-react";
+import noImage from "../img/noImage.jpg"
 
 export default function CardComponent() {
-  return (
-    <Card className="group overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-          <img
-            src="/placeholder.svg"
-            width={400}
-            height={225}
-            alt="News Article"
-            className="w-full h-48 object-cover"
-          />
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-medium">
-                Technology
-              </div>
-              <div className="text-xs text-muted-foreground">April 15, 2024</div>
+  const {
+    data: news,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetNewsQuery();
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
+        <h2 className="text-2xl font-semibold text-gray-700 animate-pulse">
+          Loading...
+        </h2>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Card className="flex items-center justify-center h-48 bg-red-50">
+        <div className="text-center">
+          <AlertCircle className="h-8 w-8 text-red-500 mx-auto mb-2" />
+          <p className="text-sm text-red-600">Error: {error.message}</p>
+        </div>
+      </Card>
+    );
+  }
+
+  if (isSuccess && news) {
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+    return news.articles.map((newsItem) => (
+      <Card className="group overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+        <img
+          src={newsItem.urlToImage || noImage}
+          width={600}
+          height={337}
+          alt={newsItem.title || "News Article"}
+          className="w-full h-64 object-cover"
+        />
+        <CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-medium">
+              {"Business"}
             </div>
-            <h3 className="text-lg font-bold mb-2">The Future of Artificial Intelligence</h3>
-            <p className="text-sm text-muted-foreground line-clamp-3">
-              Explore the latest advancements in AI technology and its potential impact on our lives. From machine
-              learning to natural language processing, this article delves into the cutting-edge developments shaping
-              the future.
-            </p>
-          </CardContent>
-        </Card>
-  )
+            <div className="text-xs text-muted-foreground">
+              {formatDate(newsItem.publishedAt) || "April 15, 2024"}
+            </div>
+          </div>
+          <h3 className="text-lg font-bold mb-2">
+            {newsItem.title || "Title not Included"}
+          </h3>
+          <p className="text-sm text-muted-foreground line-clamp-3">
+            {newsItem.description || "No description to show !"}
+          </p>
+        </CardContent>
+      </Card>
+    ));
+  }
+
+  // Fallback in case none of the above conditions are met
+  return null;
 }
