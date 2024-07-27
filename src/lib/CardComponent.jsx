@@ -1,8 +1,8 @@
 import { Card, CardContent } from "../components/ui/card";
-import { AlertCircle } from "lucide-react"; 
+import { AlertCircle } from "lucide-react";
 import { useGetNewsQuery } from "../features/api/apiSlice";
 import { Loader2 } from "lucide-react";
-import noImage from "../img/noImage.jpg"
+import noImage from "../img/noImage.jpg";
 
 export default function CardComponent() {
   const {
@@ -37,16 +37,23 @@ export default function CardComponent() {
   if (isSuccess && news) {
     function formatDate(dateString) {
       const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       });
     }
+    const executeOnClick = (newsItemUrl) => {
+      console.log(newsItemUrl);
+    };
+
     return news.articles.map((newsItem) => (
-      <Card className="group overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+      <Card
+        className="group overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+        onClick={() => executeOnClick(newsItem.url)}
+      >
         <img
           src={newsItem.urlToImage || noImage}
           width={600}
