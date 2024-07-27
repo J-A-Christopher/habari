@@ -1,7 +1,9 @@
 import { Card, CardContent } from "../components/ui/card";
 import { AlertCircle } from "lucide-react";
 import { useGetNewsQuery } from "../features/api/apiSlice";
+import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+
 import noImage from "../img/noImage.jpg";
 
 export default function CardComponent() {
@@ -12,6 +14,8 @@ export default function CardComponent() {
     isError,
     error,
   } = useGetNewsQuery();
+  const navigate = useNavigate();
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
@@ -46,11 +50,12 @@ export default function CardComponent() {
       });
     }
     const executeOnClick = (newsItemUrl) => {
-      console.log(newsItemUrl);
+      navigate("/external-news", { state: { url: newsItemUrl } });
     };
 
     return news.articles.map((newsItem) => (
       <Card
+        key={newsItem.title}
         className="group overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
         onClick={() => executeOnClick(newsItem.url)}
       >
