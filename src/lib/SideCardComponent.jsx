@@ -4,8 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { Link }  from "react-router-dom";
-
+import { Link } from "react-router-dom";
 
 export default function SideCardComponent() {
   return (
@@ -18,7 +17,6 @@ export default function SideCardComponent() {
           <Link
             to="#"
             className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors"
-            prefetch={false}
           >
             <FolderIcon className="w-4 h-4" />
             Technology
@@ -26,7 +24,6 @@ export default function SideCardComponent() {
           <Link
             to="#"
             className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors"
-            prefetch={false}
           >
             <BriefcaseIcon className="w-4 h-4" />
             Business
@@ -34,7 +31,6 @@ export default function SideCardComponent() {
           <Link
             to="#"
             className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors"
-            prefetch={false}
           >
             <BeakerIcon className="w-4 h-4" />
             Science
@@ -42,7 +38,6 @@ export default function SideCardComponent() {
           <Link
             to="#"
             className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors"
-            prefetch={false}
           >
             <HeartIcon className="w-4 h-4" />
             Health

@@ -3,18 +3,29 @@ import { AlertCircle } from "lucide-react";
 import { useGetNewsQuery } from "../features/api/apiSlice";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import ShowAlertComponent from "./ShowAlertComponent";
 
 import noImage from "../img/noImage.jpg";
 
-export default function CardComponent() {
+export default function CardComponent({ catData }) {
   const {
     data: news,
     isLoading,
     isSuccess,
     isError,
     error,
-  } = useGetNewsQuery();
+  } = useGetNewsQuery(catData || "general");
   const navigate = useNavigate();
+  const [showInvalidDialog, setShowInvalidDialog] = useState(false);
+
+  useEffect(() => {
+    if (isSuccess && news && news.articles && news.articles.length === 0) {
+      setShowInvalidDialog(true);
+    } else {
+      setShowInvalidDialog(false);
+    }
+  }, [isSuccess, news]);
 
   if (isLoading) {
     return (
@@ -38,6 +49,10 @@ export default function CardComponent() {
     );
   }
 
+  if (isSuccess && !news) {
+    return <ShowAlertComponent />;
+  }
+
   if (isSuccess && news) {
     function formatDate(dateString) {
       const date = new Date(dateString);
@@ -53,37 +68,47 @@ export default function CardComponent() {
       navigate("/external-news", { state: { url: newsItemUrl } });
     };
 
-    return news.articles.map((newsItem) => (
-      <Card
-        key={newsItem.title}
-        className="group overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-        onClick={() => executeOnClick(newsItem.url)}
-      >
-        <img
-          src={newsItem.urlToImage || noImage}
-          width={600}
-          height={337}
-          alt={newsItem.title || "News Article"}
-          className="w-full h-64 object-cover"
-        />
-        <CardContent className="p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-medium">
-              {"Business"}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {formatDate(newsItem.publishedAt) || "April 15, 2024"}
-            </div>
-          </div>
-          <h3 className="text-lg font-bold mb-2">
-            {newsItem.title || "Title not Included"}
-          </h3>
-          <p className="text-sm text-muted-foreground line-clamp-3">
-            {newsItem.description || "No description to show !"}
-          </p>
-        </CardContent>
-      </Card>
-    ));
+    return (
+      <>
+        {showInvalidDialog && (
+          <ShowAlertComponent
+            isOpen={showInvalidDialog}
+            onClose={() => setShowInvalidDialog(false)}
+          />
+        )}
+        {news.articles.map((newsItem) => (
+          <Card
+            key={newsItem.title}
+            className="group overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            onClick={() => executeOnClick(newsItem.url)}
+          >
+            <img
+              src={newsItem.urlToImage || noImage}
+              width={600}
+              height={337}
+              alt={newsItem.title || "News Article"}
+              className="w-full h-64 object-cover"
+            />
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-medium">
+                  {"Business"}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {formatDate(newsItem.publishedAt) || "April 15, 2024"}
+                </div>
+              </div>
+              <h3 className="text-lg font-bold mb-2">
+                {newsItem.title || "Title not Included"}
+              </h3>
+              <p className="text-sm text-muted-foreground line-clamp-3">
+                {newsItem.description || "No description to show !"}
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </>
+    );
   }
 
   // Fallback in case none of the above conditions are met
