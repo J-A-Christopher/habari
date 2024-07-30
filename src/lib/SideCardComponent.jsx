@@ -6,7 +6,14 @@ import {
 } from "../components/ui/card";
 import { Link } from "react-router-dom";
 
-export default function SideCardComponent() {
+export default function SideCardComponent({ clickedLinkItem }) {
+  const categories = [
+    { name: "Technology", icon: FolderIcon },
+    { name: "Business", icon: BriefcaseIcon },
+    { name: "Science", icon: BeakerIcon },
+    { name: "Health", icon: HeartIcon },
+  ];
+
   return (
     <Card>
       <CardHeader>
@@ -14,34 +21,17 @@ export default function SideCardComponent() {
       </CardHeader>
       <CardContent>
         <nav className="space-y-2">
-          <Link
-            to="#"
-            className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors"
-          >
-            <FolderIcon className="w-4 h-4" />
-            Technology
-          </Link>
-          <Link
-            to="#"
-            className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors"
-          >
-            <BriefcaseIcon className="w-4 h-4" />
-            Business
-          </Link>
-          <Link
-            to="#"
-            className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors"
-          >
-            <BeakerIcon className="w-4 h-4" />
-            Science
-          </Link>
-          <Link
-            to="#"
-            className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors"
-          >
-            <HeartIcon className="w-4 h-4" />
-            Health
-          </Link>
+          {categories.map((category) => (
+            <Link
+              key={`${category.name}`}
+              onClick={() => clickedLinkItem(category.name)}
+              to="#"
+              className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors"
+            >
+              <category.icon className="w-4 h-4" />
+              {category.name}
+            </Link>
+          ))}
         </nav>
       </CardContent>
     </Card>

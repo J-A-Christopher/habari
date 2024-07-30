@@ -49,9 +49,7 @@ export default function CardComponent({ catData }) {
     );
   }
 
-  if (isSuccess && !news) {
-    return <ShowAlertComponent />;
-  }
+
 
   if (isSuccess && news) {
     function formatDate(dateString) {
@@ -110,7 +108,5 @@ export default function CardComponent({ catData }) {
       </>
     );
   }
-
-  // Fallback in case none of the above conditions are met
   return null;
 }

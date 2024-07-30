@@ -23,6 +23,9 @@ export default function HomePage() {
   const catDataHandler = (event) => {
     setInputValue(event.target.value);
   };
+  const handleCategoryClick = (category) => {
+    setCatData(category);
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -44,7 +47,7 @@ export default function HomePage() {
           <CardComponent catData={catData} />
         </main>
         <aside className="w-full md:w-80 space-y-6 flex-shrink-0 md:fixed md:right-8 md:top-24 md:bottom-8 md:overflow-auto">
-          <SideCardComponent />
+          <SideCardComponent clickedLinkItem={handleCategoryClick} />
           <FurthestDownComp />
         </aside>
       </div>
